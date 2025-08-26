@@ -1,6 +1,5 @@
 package com.daniilkhanukov.spring.pizza_website.config;
 
-import com.daniilkhanukov.spring.pizza_website.repository.UserRepository;
 import com.daniilkhanukov.spring.pizza_website.security.CustomAuthenticationFailureHandler;
 import com.daniilkhanukov.spring.pizza_website.security.CustomAuthenticationSuccessHandler;
 import com.daniilkhanukov.spring.pizza_website.security.CustomUserDetailsService;
@@ -12,7 +11,6 @@ import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
-import org.springframework.security.config.annotation.web.configuration.WebSecurityCustomizer;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
@@ -22,8 +20,6 @@ import org.springframework.security.web.SecurityFilterChain;
 @EnableWebSecurity
 public class SecurityConfig {
 
-    @Autowired
-    private UserRepository userRepository;
     @Autowired
     private CustomAuthenticationSuccessHandler customAuthenticationSuccessHandler;
     @Autowired
@@ -45,7 +41,7 @@ public class SecurityConfig {
                 .authenticationProvider(authenticationProvider())
                 .authorizeHttpRequests(authorize -> authorize
                         .dispatcherTypeMatchers(DispatcherType.FORWARD).permitAll()
-                        .requestMatchers("/pizza", "/cart", "/register", "/cart/add/**","/cart/anonymous/**", "/resources/images/", "/images/**").permitAll()
+                        .requestMatchers("/pizza", "/login", "/cart", "/register", "/cart/add/**","/cart/anonymous/**", "/resources/images/", "/images/**").permitAll()
                         .anyRequest().authenticated()
                 )
                 .formLogin(form -> form
@@ -66,8 +62,4 @@ public class SecurityConfig {
         return new BCryptPasswordEncoder();
     }
 
-    @Bean
-    public WebSecurityCustomizer webSecurityCustomizer() {
-        return (web) -> web.ignoring().requestMatchers("/images/**");
-    }
 }
